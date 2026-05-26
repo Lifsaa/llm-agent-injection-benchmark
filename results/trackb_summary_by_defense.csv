@@ -1,0 +1,4 @@
+bucket,total,successes,attack_success_rate,blocked_count,detected_count,total_tokens,average_total_tokens,estimated_cost_usd
+melon_aug,52,0,0.0,0,0,86342,1660.423076923077,0.337715
+no_defense,52,2,0.038461538461538464,0,0,40241,773.8653846153846,0.1636475
+spotlighting,52,0,0.0,0,0,44787,861.2884615384615,0.1668825

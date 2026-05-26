@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" role="img">
+<rect width="100%" height="100%" fill="white" />
+<text x="360" y="28" text-anchor="middle" font-size="18">Attack Success Rate by Defense</text>
+<line x1="60" y1="300" x2="660" y2="300" stroke="#333" />
+<line x1="60" y1="60" x2="60" y2="300" stroke="#333" />
+<rect x="60" y="300" width="120" height="0" fill="#4f7cac" />
+<text x="120.0" y="325" text-anchor="middle" font-size="13">melon_aug</text>
+<text x="120.0" y="292" text-anchor="middle" font-size="13">0.0%</text>
+<rect x="230" y="60" width="120" height="240" fill="#4f7cac" />
+<text x="290.0" y="325" text-anchor="middle" font-size="13">no_defense</text>
+<text x="290.0" y="52" text-anchor="middle" font-size="13">100.0%</text>
+<rect x="400" y="300" width="120" height="0" fill="#4f7cac" />
+<text x="460.0" y="325" text-anchor="middle" font-size="13">spotlighting</text>
+<text x="460.0" y="292" text-anchor="middle" font-size="13">0.0%</text>
+</svg>

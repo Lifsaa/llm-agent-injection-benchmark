@@ -1,0 +1,228 @@
+{
+  "by_architecture": {
+    "toolflow_active": {
+      "attack_success_rate": 0.3333333333333333,
+      "average_total_tokens": 146.0,
+      "blocked_count": 32,
+      "detected_count": 32,
+      "estimated_cost_usd": 0.04464,
+      "successes": 32,
+      "total": 96,
+      "total_tokens": 14016
+    }
+  },
+  "by_category": {
+    "encoded_payload": {
+      "attack_success_rate": 0.3333333333333333,
+      "average_total_tokens": 146.0,
+      "blocked_count": 8,
+      "detected_count": 8,
+      "estimated_cost_usd": 0.01116,
+      "successes": 8,
+      "total": 24,
+      "total_tokens": 3504
+    },
+    "formatting": {
+      "attack_success_rate": 0.3333333333333333,
+      "average_total_tokens": 146.0,
+      "blocked_count": 8,
+      "detected_count": 8,
+      "estimated_cost_usd": 0.01116,
+      "successes": 8,
+      "total": 24,
+      "total_tokens": 3504
+    },
+    "plain_text": {
+      "attack_success_rate": 0.3333333333333333,
+      "average_total_tokens": 146.0,
+      "blocked_count": 8,
+      "detected_count": 8,
+      "estimated_cost_usd": 0.01116,
+      "successes": 8,
+      "total": 24,
+      "total_tokens": 3504
+    },
+    "role_based": {
+      "attack_success_rate": 0.3333333333333333,
+      "average_total_tokens": 146.0,
+      "blocked_count": 8,
+      "detected_count": 8,
+      "estimated_cost_usd": 0.01116,
+      "successes": 8,
+      "total": 24,
+      "total_tokens": 3504
+    }
+  },
+  "by_defense": {
+    "melon_aug": {
+      "attack_success_rate": 0.0,
+      "average_total_tokens": 250.0,
+      "blocked_count": 32,
+      "detected_count": 32,
+      "estimated_cost_usd": 0.02408,
+      "successes": 0,
+      "total": 32,
+      "total_tokens": 8000
+    },
+    "no_defense": {
+      "attack_success_rate": 1.0,
+      "average_total_tokens": 82.0,
+      "blocked_count": 0,
+      "detected_count": 0,
+      "estimated_cost_usd": 0.00992,
+      "successes": 32,
+      "total": 32,
+      "total_tokens": 2624
+    },
+    "spotlighting": {
+      "attack_success_rate": 0.0,
+      "average_total_tokens": 106.0,
+      "blocked_count": 0,
+      "detected_count": 0,
+      "estimated_cost_usd": 0.01064,
+      "successes": 0,
+      "total": 32,
+      "total_tokens": 3392
+    }
+  },
+  "by_defense_category": {
+    "melon_aug::encoded_payload": {
+      "attack_success_rate": 0.0,
+      "average_total_tokens": 250.0,
+      "blocked_count": 8,
+      "detected_count": 8,
+      "estimated_cost_usd": 0.00602,
+      "successes": 0,
+      "total": 8,
+      "total_tokens": 2000
+    },
+    "melon_aug::formatting": {
+      "attack_success_rate": 0.0,
+      "average_total_tokens": 250.0,
+      "blocked_count": 8,
+      "detected_count": 8,
+      "estimated_cost_usd": 0.00602,
+      "successes": 0,
+      "total": 8,
+      "total_tokens": 2000
+    },
+    "melon_aug::plain_text": {
+      "attack_success_rate": 0.0,
+      "average_total_tokens": 250.0,
+      "blocked_count": 8,
+      "detected_count": 8,
+      "estimated_cost_usd": 0.00602,
+      "successes": 0,
+      "total": 8,
+      "total_tokens": 2000
+    },
+    "melon_aug::role_based": {
+      "attack_success_rate": 0.0,
+      "average_total_tokens": 250.0,
+      "blocked_count": 8,
+      "detected_count": 8,
+      "estimated_cost_usd": 0.00602,
+      "successes": 0,
+      "total": 8,
+      "total_tokens": 2000
+    },
+    "no_defense::encoded_payload": {
+      "attack_success_rate": 1.0,
+      "average_total_tokens": 82.0,
+      "blocked_count": 0,
+      "detected_count": 0,
+      "estimated_cost_usd": 0.00248,
+      "successes": 8,
+      "total": 8,
+      "total_tokens": 656
+    },
+    "no_defense::formatting": {
+      "attack_success_rate": 1.0,
+      "average_total_tokens": 82.0,
+      "blocked_count": 0,
+      "detected_count": 0,
+      "estimated_cost_usd": 0.00248,
+      "successes": 8,
+      "total": 8,
+      "total_tokens": 656
+    },
+    "no_defense::plain_text": {
+      "attack_success_rate": 1.0,
+      "average_total_tokens": 82.0,
+      "blocked_count": 0,
+      "detected_count": 0,
+      "estimated_cost_usd": 0.00248,
+      "successes": 8,
+      "total": 8,
+      "total_tokens": 656
+    },
+    "no_defense::role_based": {
+      "attack_success_rate": 1.0,
+      "average_total_tokens": 82.0,
+      "blocked_count": 0,
+      "detected_count": 0,
+      "estimated_cost_usd": 0.00248,
+      "successes": 8,
+      "total": 8,
+      "total_tokens": 656
+    },
+    "spotlighting::encoded_payload": {
+      "attack_success_rate": 0.0,
+      "average_total_tokens": 106.0,
+      "blocked_count": 0,
+      "detected_count": 0,
+      "estimated_cost_usd": 0.00266,
+      "successes": 0,
+      "total": 8,
+      "total_tokens": 848
+    },
+    "spotlighting::formatting": {
+      "attack_success_rate": 0.0,
+      "average_total_tokens": 106.0,
+      "blocked_count": 0,
+      "detected_count": 0,
+      "estimated_cost_usd": 0.00266,
+      "successes": 0,
+      "total": 8,
+      "total_tokens": 848
+    },
+    "spotlighting::plain_text": {
+      "attack_success_rate": 0.0,
+      "average_total_tokens": 106.0,
+      "blocked_count": 0,
+      "detected_count": 0,
+      "estimated_cost_usd": 0.00266,
+      "successes": 0,
+      "total": 8,
+      "total_tokens": 848
+    },
+    "spotlighting::role_based": {
+      "attack_success_rate": 0.0,
+      "average_total_tokens": 106.0,
+      "blocked_count": 0,
+      "detected_count": 0,
+      "estimated_cost_usd": 0.00266,
+      "successes": 0,
+      "total": 8,
+      "total_tokens": 848
+    }
+  },
+  "by_trial": {
+    "0": {
+      "attack_success_rate": 0.3333333333333333,
+      "average_total_tokens": 146.0,
+      "blocked_count": 32,
+      "detected_count": 32,
+      "estimated_cost_usd": 0.04464,
+      "successes": 32,
+      "total": 96,
+      "total_tokens": 14016
+    }
+  },
+  "overall": {
+    "attack_success_rate": 0.3333333333333333,
+    "estimated_cost_usd": 0.04464,
+    "successes": 32,
+    "total": 96
+  }
+}
