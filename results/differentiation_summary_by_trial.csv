@@ -1,0 +1,2 @@
+bucket,total,successes,attack_success_rate,blocked_count,detected_count,total_tokens,average_total_tokens,estimated_cost_usd
+0,400,56,0.14,0,0,572810,1432.025,2.1370175

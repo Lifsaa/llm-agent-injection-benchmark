@@ -86,7 +86,7 @@ def _execute_unblocked_unauthorized(
     """Execute unauthorized calls not reproduced by masked replay so they still count."""
     execution_env = EmailToolEnvironment(
         inbox,
-        spotlight_content=uses_spotlighted_tool_data("melon_aug", primary.architecture),
+        spotlight_content=uses_spotlighted_tool_data(primary.defense, primary.architecture),
     )
     executed = []
     for call in calls:

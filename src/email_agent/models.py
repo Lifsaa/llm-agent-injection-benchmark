@@ -30,11 +30,16 @@ class AttackCase:
     sender: str = "external.sender@example.com"
     recipient: str = "attacker@example.com"
     expected_email_id: str = "confidential-001"
+    follow_up_messages: tuple[str, ...] = ()
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "AttackCase":
         """Build an attack case from a JSON object."""
-        return cls(**data)
+        known = {field.name for field in cls.__dataclass_fields__.values()}
+        filtered = {key: value for key, value in data.items() if key in known}
+        if "follow_up_messages" in filtered:
+            filtered["follow_up_messages"] = tuple(filtered["follow_up_messages"])
+        return cls(**filtered)
 
     def to_email(self) -> Email:
         """Convert an attack case into an unread simulated email."""
@@ -95,6 +100,7 @@ class AgentRunResult:
     estimated_cost_usd: float = 0.0
     trial_index: int = 0
     temperature: float = 0.0
+    turn_count: int = 1
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-serializable result dictionary."""

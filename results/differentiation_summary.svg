@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" role="img">
+<rect width="100%" height="100%" fill="white" />
+<text x="360" y="28" text-anchor="middle" font-size="18">Attack Success Rate by Defense</text>
+<line x1="60" y1="300" x2="660" y2="300" stroke="#333" />
+<line x1="60" y1="60" x2="60" y2="300" stroke="#333" />
+<rect x="60" y="257" width="120" height="43" fill="#4f7cac" />
+<text x="120.0" y="325" text-anchor="middle" font-size="13">melon_only</text>
+<text x="120.0" y="249" text-anchor="middle" font-size="13">18.0%</text>
+<rect x="230" y="252" width="120" height="48" fill="#4f7cac" />
+<text x="290.0" y="325" text-anchor="middle" font-size="13">no_defense</text>
+<text x="290.0" y="244" text-anchor="middle" font-size="13">20.0%</text>
+<rect x="400" y="274" width="120" height="26" fill="#4f7cac" />
+<text x="460.0" y="325" text-anchor="middle" font-size="13">spotlighting</text>
+<text x="460.0" y="266" text-anchor="middle" font-size="13">11.0%</text>
+<rect x="570" y="284" width="120" height="16" fill="#4f7cac" />
+<text x="630.0" y="325" text-anchor="middle" font-size="13">spotlighting_melon_aug</text>
+<text x="630.0" y="276" text-anchor="middle" font-size="13">7.0%</text>
+</svg>

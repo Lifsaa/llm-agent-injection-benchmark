@@ -20,6 +20,7 @@ from email_agent.toolflow import (
     first_read_emails_result,
     prefilled_read_emails_messages,
     safe_json_loads,
+    uses_melon_detection,
     uses_spotlighted_tool_data,
 )
 
@@ -85,6 +86,8 @@ def test_safe_json_loads_returns_empty_dict_for_json_list():
         ("spotlighting", "toolflow_active"),
         ("melon_aug", "toolflow_neutral"),
         ("melon_aug", "toolflow_active"),
+        ("spotlighting_melon_aug", "toolflow_neutral"),
+        ("spotlighting_melon_aug", "toolflow_active"),
     ],
 )
 def test_uses_spotlighted_tool_data_true_for_qualifying_pairs(defense, architecture):
@@ -96,6 +99,8 @@ def test_uses_spotlighted_tool_data_true_for_qualifying_pairs(defense, architect
     [
         ("no_defense", "toolflow_neutral"),
         ("no_defense", "toolflow_active"),
+        ("melon_only", "toolflow_neutral"),
+        ("melon_only", "toolflow_active"),
         ("spotlighting", "prompt_snapshot_cautious"),
         ("melon_aug", "prompt_snapshot_cautious"),
         ("no_defense", "prompt_snapshot_cautious"),
@@ -103,6 +108,19 @@ def test_uses_spotlighted_tool_data_true_for_qualifying_pairs(defense, architect
 )
 def test_uses_spotlighted_tool_data_false_for_non_qualifying_pairs(defense, architecture):
     assert uses_spotlighted_tool_data(defense, architecture) is False
+
+
+@pytest.mark.parametrize(
+    "defense",
+    ["melon_only", "spotlighting_melon_aug", "melon_aug"],
+)
+def test_uses_melon_detection_true_for_melon_defenses(defense):
+    assert uses_melon_detection(defense) is True
+
+
+def test_uses_melon_detection_false_for_non_melon_defenses():
+    assert uses_melon_detection("no_defense") is False
+    assert uses_melon_detection("spotlighting") is False
 
 
 # ---------------------------------------------------------------------------

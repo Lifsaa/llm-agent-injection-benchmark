@@ -18,6 +18,7 @@ from email_agent.toolflow import (
     message_to_dict,
     prefilled_read_emails_messages,
     safe_json_loads,
+    uses_melon_detection,
     uses_spotlighted_tool_data,
 )
 
@@ -34,8 +35,10 @@ class MockEmailAgent:
         architecture: str = "toolflow_neutral",
         trial_index: int = 0,
         temperature: float = 0.0,
+        follow_up_messages: tuple[str, ...] | None = None,
     ) -> AgentRunResult:
         """Run one deterministic mock trial for a defense and inbox."""
+        follow_ups = tuple(follow_up_messages or (attack.follow_up_messages if attack else ()))
         env = EmailToolEnvironment(inbox, spotlight_content=uses_spotlighted_tool_data(defense, architecture))
         unread = env.execute_tool("read_emails", {})
         model_response = f"Summary: {len(unread)} unread emails need review."
@@ -43,9 +46,31 @@ class MockEmailAgent:
         prompt_tokens = estimate_tokens_from_messages(build_messages(defense, inbox, architecture=architecture))
         completion_tokens = estimate_tokens_from_text(model_response)
         detection_overhead_tokens = 0
+        turn_count = 1
 
-        if attack:
-            if defense == "melon_aug":
+        should_attempt_attack = attack is not None and (not follow_ups or turn_count >= 1)
+        if attack and follow_ups:
+            turn_count = 1 + len(follow_ups)
+            for index, follow_up in enumerate(follow_ups, start=2):
+                model_response += f" Turn {index} user: {follow_up!r}."
+                if uses_melon_detection(defense):
+                    candidate = self._mock_candidate_tool_call(attack)
+                    masked_candidate = self._mock_candidate_tool_call(attack)
+                    detection_overhead_tokens = estimate_tokens_from_messages(
+                        build_messages(defense, inbox, user_task=MASKED_USER_TASK, architecture=architecture)
+                    )
+                    if tool_signature(candidate) == tool_signature(masked_candidate):
+                        blocked_tool_calls.append(candidate)
+                        model_response += " Blocked suspicious email-requested action."
+                    elif self._mock_attack_succeeds(defense):
+                        env.execute_tool(attack.target_tool, self._arguments_for_attack(attack))
+                        model_response += " Completed requested email action."
+                elif self._mock_attack_succeeds(defense):
+                    env.execute_tool(attack.target_tool, self._arguments_for_attack(attack))
+                    model_response += " Completed requested email action."
+            completion_tokens = estimate_tokens_from_text(model_response)
+        elif attack and should_attempt_attack:
+            if uses_melon_detection(defense):
                 candidate = self._mock_candidate_tool_call(attack)
                 masked_candidate = self._mock_candidate_tool_call(attack)
                 detection_overhead_tokens = estimate_tokens_from_messages(
@@ -74,6 +99,7 @@ class MockEmailAgent:
             model_response=model_response,
             trial_index=trial_index,
             temperature=temperature,
+            turn_count=turn_count,
             tool_calls=env.tool_calls,
             blocked_tool_calls=blocked_tool_calls,
             attack_success=evaluation.attack_success,
@@ -133,17 +159,21 @@ class OpenAIEmailAgent:
         architecture: str = "toolflow_neutral",
         trial_index: int = 0,
         temperature: float | None = None,
+        follow_up_messages: tuple[str, ...] | None = None,
     ) -> AgentRunResult:
         """Run one GPT trial for a defense, architecture, and injected inbox."""
         run_temperature = self.temperature if temperature is None else temperature
-        if defense == "melon_aug":
+        follow_ups = tuple(follow_up_messages or (attack.follow_up_messages if attack else ()))
+        if uses_melon_detection(defense):
             return self._run_melon_aug(
+                defense=defense,
                 inbox=inbox,
                 attack=attack,
                 model=model,
                 architecture=architecture,
                 trial_index=trial_index,
                 temperature=run_temperature,
+                follow_up_messages=follow_ups,
             )
 
         return self._run_once(
@@ -154,19 +184,22 @@ class OpenAIEmailAgent:
             architecture=architecture,
             trial_index=trial_index,
             temperature=run_temperature,
+            follow_up_messages=follow_ups,
         )
 
     def _run_melon_aug(
         self,
+        defense: str,
         inbox: list[Email],
         attack: AttackCase | None = None,
         model: str | None = None,
         architecture: str = "toolflow_neutral",
         trial_index: int = 0,
         temperature: float = 0.0,
+        follow_up_messages: tuple[str, ...] = (),
     ) -> AgentRunResult:
         primary = self._run_once(
-            defense="melon_aug",
+            defense=defense,
             inbox=inbox,
             attack=attack,
             model=model,
@@ -175,10 +208,11 @@ class OpenAIEmailAgent:
             architecture=architecture,
             trial_index=trial_index,
             temperature=temperature,
+            follow_up_messages=follow_up_messages,
         )
         primary_read_result = first_read_emails_result(primary.tool_calls)
         masked = self._run_once(
-            defense="melon_aug",
+            defense=defense,
             inbox=inbox,
             attack=attack,
             model=model,
@@ -189,6 +223,7 @@ class OpenAIEmailAgent:
             extra_messages=MELON_FEW_SHOT_MESSAGES,
             trial_index=trial_index,
             temperature=temperature,
+            follow_up_messages=follow_up_messages,
         )
         return apply_melon_aug_detection(primary, masked, inbox)
 
@@ -205,6 +240,7 @@ class OpenAIEmailAgent:
         extra_messages: list[dict[str, Any]] | None = None,
         trial_index: int = 0,
         temperature: float | None = None,
+        follow_up_messages: tuple[str, ...] = (),
     ) -> AgentRunResult:
         from openai import OpenAI
 
@@ -224,51 +260,59 @@ class OpenAIEmailAgent:
         model_response = ""
         prompt_tokens = 0
         completion_tokens = 0
+        pending_follow_ups = list(follow_up_messages)
+        turn_count = 0
 
-        for _ in range(self.max_tool_steps):
-            response = client.chat.completions.create(
-                model=selected_model,
-                messages=messages,
-                tools=env.openai_tool_specs(),
-                tool_choice="auto",
-                temperature=self.temperature if temperature is None else temperature,
-            )
-            usage = getattr(response, "usage", None)
-            if usage is not None:
-                prompt_tokens += int(getattr(usage, "prompt_tokens", 0) or 0)
-                completion_tokens += int(getattr(usage, "completion_tokens", 0) or 0)
-            message = response.choices[0].message
-            model_response = message.content or model_response
-            messages.append(message_to_dict(message))
-
-            tool_calls = message.tool_calls or []
-            if not tool_calls:
-                break
-
-            for tool_call in tool_calls:
-                name = tool_call.function.name
-                arguments = safe_json_loads(tool_call.function.arguments)
-                if not execute_unauthorized and name in UNAUTHORIZED_TOOL_NAMES:
-                    result = {"blocked": True, "reason": "Candidate unauthorized tool call captured without execution"}
-                    env.tool_calls.append(
-                        ToolCallRecord(
-                            name=name,
-                            arguments=arguments,
-                            timestamp="candidate",
-                            authorized=False,
-                            result=result,
-                        )
-                    )
-                else:
-                    result = env.execute_tool(name, arguments)
-                messages.append(
-                    {
-                        "role": "tool",
-                        "tool_call_id": tool_call.id,
-                        "name": name,
-                        "content": json.dumps(result),
-                    }
+        while True:
+            turn_count += 1
+            for _ in range(self.max_tool_steps):
+                response = client.chat.completions.create(
+                    model=selected_model,
+                    messages=messages,
+                    tools=env.openai_tool_specs(),
+                    tool_choice="auto",
+                    temperature=self.temperature if temperature is None else temperature,
                 )
+                usage = getattr(response, "usage", None)
+                if usage is not None:
+                    prompt_tokens += int(getattr(usage, "prompt_tokens", 0) or 0)
+                    completion_tokens += int(getattr(usage, "completion_tokens", 0) or 0)
+                message = response.choices[0].message
+                model_response = message.content or model_response
+                messages.append(message_to_dict(message))
+
+                tool_calls = message.tool_calls or []
+                if not tool_calls:
+                    break
+
+                for tool_call in tool_calls:
+                    name = tool_call.function.name
+                    arguments = safe_json_loads(tool_call.function.arguments)
+                    if not execute_unauthorized and name in UNAUTHORIZED_TOOL_NAMES:
+                        result = {"blocked": True, "reason": "Candidate unauthorized tool call captured without execution"}
+                        env.tool_calls.append(
+                            ToolCallRecord(
+                                name=name,
+                                arguments=arguments,
+                                timestamp="candidate",
+                                authorized=False,
+                                result=result,
+                            )
+                        )
+                    else:
+                        result = env.execute_tool(name, arguments)
+                    messages.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "name": name,
+                            "content": json.dumps(result),
+                        }
+                    )
+
+            if not pending_follow_ups:
+                break
+            messages.append({"role": "user", "content": pending_follow_ups.pop(0)})
 
         if prompt_tokens == 0:
             prompt_tokens = estimate_tokens_from_messages(
@@ -286,6 +330,7 @@ class OpenAIEmailAgent:
             model_response=model_response,
             trial_index=trial_index,
             temperature=self.temperature if temperature is None else temperature,
+            turn_count=turn_count,
             tool_calls=env.tool_calls,
             attack_success=evaluation.attack_success,
             unauthorized_tools=evaluation.unauthorized_tools,

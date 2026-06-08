@@ -6,6 +6,7 @@ import json
 from typing import Any
 
 from email_agent.models import ToolCallRecord
+from email_agent.prompts import MELON_DEFENSES, SPOTLIGHT_DEFENSES
 
 
 def extract_email_address(text: str) -> str | None:
@@ -38,7 +39,12 @@ def message_to_dict(message: Any) -> dict[str, Any]:
 
 def uses_spotlighted_tool_data(defense: str, architecture: str) -> bool:
     """Return whether read_emails should wrap email bodies as untrusted tool data."""
-    return architecture in {"toolflow_neutral", "toolflow_active"} and defense in {"spotlighting", "melon_aug"}
+    return architecture in {"toolflow_neutral", "toolflow_active"} and defense in SPOTLIGHT_DEFENSES
+
+
+def uses_melon_detection(defense: str) -> bool:
+    """Return whether masked replay detection should run for a defense condition."""
+    return defense in MELON_DEFENSES
 
 
 def first_read_emails_result(tool_calls: list[ToolCallRecord]) -> list[dict[str, Any]] | None:
