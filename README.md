@@ -1,6 +1,6 @@
 # LLM agent prompt injection benchmark
 
-An email assistant that can call tools will read untrusted email. If one of those emails contains instructions, does the agent follow them? This project measures how often a GPT-4o tool-calling agent can be pushed into unauthorized actions by injected email content, and how much two published defenses reduce that.
+An email assistant with tools has to read email from strangers. If one of those emails contains instructions, will the agent follow them? This project measures how often a GPT-4o tool-calling agent can be pushed into unauthorized actions by injected email content, and how much two published defenses reduce that.
 
 The agent gets a fixed user task, calls `read_emails`, and sees attacker-written emails only as tool output. An attack counts as successful only when injected content causes an unauthorized `send_email`, `delete_email`, or `forward_email` call.
 
@@ -13,13 +13,13 @@ On the hardened attack set (v2: 100 attacks across 10 categories, 4 defense cond
 | None | 100 | 20% | 970 |
 | Spotlighting | 100 | 11% | 1,074 |
 | MELON alone | 100 | 18% | 1,671 |
-| Spotlighting + MELON-Aug | 100 | **7%** | 2,012 |
+| Spotlighting + MELON-Aug | 100 | 7% | 2,012 |
 
-- **The defenses cover different failures.** Spotlighting marks where untrusted content starts and ends, so it acts before the model decides. MELON re-runs the agent with the user's task masked and blocks the tool call if it would happen anyway, so it acts after the model decides. Neither alone gets close to the combination.
-- **Protection roughly doubles token cost.** MELON's masked re-execution is a second model call per step.
-- **Chat-turn hijacking is the open problem.** Emails that imitate a new user or assistant turn succeeded 78% of the time with no defense and still 39% with both defenses. Every other category stayed at or below 10% overall.
+The two defenses catch different things. Spotlighting marks where untrusted email text starts and ends, so it works before the model decides anything. MELON re-runs the agent with the user's task masked out, and if the agent still wants to make the same tool call, that call is coming from the email, so it gets blocked. Each one alone helps a little; together they help a lot more. The catch is cost: MELON's re-run is a second model call, so tokens per run roughly double.
 
-The first benchmark (52 attacks in 4 classes: plain text, role-based, formatting, encoded payload; 156 runs) was too easy. GPT-4o resisted almost everything (3.85% success undefended), and both defenses reached 0%, so it could not tell them apart. That result is kept in [docs/toolflow_results_summary.md](docs/toolflow_results_summary.md); v2 was built to stress each defense separately. An even earlier pilot that put email text straight into the prompt produced 0% everywhere and is kept only as a record.
+Chat-turn hijacking is still mostly unsolved. Emails that fake a new user or assistant turn worked 78% of the time with no defense and 39% with both defenses on. Every other category stayed at 10% or below.
+
+Our first benchmark (52 attacks in 4 classes: plain text, role-based, formatting, encoded payload; 156 runs) turned out too easy. GPT-4o shrugged off almost everything (3.85% success undefended), and both defenses reached 0%, so we couldn't tell them apart. That run is written up in [docs/toolflow_results_summary.md](docs/toolflow_results_summary.md); we built v2 with harder attacks aimed at each defense's weak spot. There's also an earlier pilot that pasted email text straight into the prompt; it got 0% everywhere and is only kept for the record.
 
 ## How it works
 
