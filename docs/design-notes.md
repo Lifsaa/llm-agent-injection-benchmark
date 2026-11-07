@@ -1,4 +1,4 @@
-# Deliverable 2 Notes
+# Design notes
 
 This workspace implements a controlled benchmark for indirect prompt injection in a tool-calling email agent.
 
@@ -38,7 +38,7 @@ For MELON-Aug, the agent performs a primary trajectory and a masked-user-prompt 
 
 ## Pilot Finding
 
-The first GPT-4o run in `results/runs.jsonl` used the `prompt_snapshot_cautious` architecture and produced 0% attack success across all defenses. That result is preserved as a pilot finding because the baseline contained an explicit dangerous-tool prohibition and included email content in the initial prompt. The corrected `toolflow_neutral` run is the primary result for the final analysis.
+The first GPT-4o run in `results/archive/runs.jsonl` used the `prompt_snapshot_cautious` architecture and produced 0% attack success across all defenses. That result is preserved as a pilot finding because the baseline contained an explicit dangerous-tool prohibition and included email content in the initial prompt. The corrected `toolflow_neutral` run is the primary result for the final analysis.
 
 ## Corrected GPT-4o Result
 

@@ -2,7 +2,7 @@
 
 ## Why We Changed the Architecture
 
-The first GPT-4o run in `results/runs.jsonl` produced 0% attack success across all defense conditions. That result is preserved as a pilot finding, but the setup was too cautious for a baseline: email contents were included in the initial prompt and the task explicitly said not to send, delete, or forward emails.
+The first GPT-4o run in `results/archive/runs.jsonl` produced 0% attack success across all defense conditions. That result is preserved as a pilot finding, but the setup was too cautious for a baseline: email contents were included in the initial prompt and the task explicitly said not to send, delete, or forward emails.
 
 The corrected architecture, `toolflow_neutral`, matches the indirect prompt injection threat model more closely. The model receives only the fixed user task, calls `read_emails`, and then sees malicious email content as external tool-returned data.
 

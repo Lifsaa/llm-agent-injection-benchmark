@@ -1,4 +1,4 @@
-# Deliverable 2 Paper Summary
+# Paper summary
 
 ## 1. What We Have Achieved Since Deliverable 1
 
