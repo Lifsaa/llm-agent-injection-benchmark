@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="300" viewBox="0 0 720 300" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif" role="img" aria-label="Attack success rate by defense">
+<rect width="720" height="300" rx="8" fill="#ffffff"/>
+<text x="24" y="34" font-size="17" font-weight="600" fill="#1f2328">Attack success rate by defense (GPT-4o, 100 attacks each)</text>
+<text x="198" y="86.0" text-anchor="end" font-size="14" fill="#1f2328">No defense</text>
+<rect x="210" y="64" width="360.0" height="34" rx="3" fill="#cf222e"/>
+<text x="578.0" y="86.0" font-size="14" font-weight="600" fill="#1f2328">20%</text>
+<text x="198" y="140.0" text-anchor="end" font-size="14" fill="#1f2328">Spotlighting</text>
+<rect x="210" y="118" width="198.0" height="34" rx="3" fill="#57606a"/>
+<text x="416.0" y="140.0" font-size="14" font-weight="600" fill="#1f2328">11%</text>
+<text x="198" y="194.0" text-anchor="end" font-size="14" fill="#1f2328">MELON alone</text>
+<rect x="210" y="172" width="324.0" height="34" rx="3" fill="#57606a"/>
+<text x="542.0" y="194.0" font-size="14" font-weight="600" fill="#1f2328">18%</text>
+<text x="198" y="248.0" text-anchor="end" font-size="14" fill="#1f2328">Spotlighting + MELON-Aug</text>
+<rect x="210" y="226" width="126.0" height="34" rx="3" fill="#1a7f37"/>
+<text x="344.0" y="248.0" font-size="14" font-weight="600" fill="#1f2328">7%</text>
+<text x="24" y="286" font-size="12" fill="#57606a">Source: results/v2_summary_by_defense.csv</text></svg>

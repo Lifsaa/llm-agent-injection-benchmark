@@ -1,6 +1,8 @@
 # LLM agent prompt injection benchmark
 
-An email assistant with tools has to read email from strangers. If one of those emails contains instructions, will the agent follow them? This project measures how often a GPT-4o tool-calling agent can be pushed into unauthorized actions by injected email content, and how much two published defenses reduce that.
+[![tests](https://github.com/Lifsaa/llm-agent-injection-benchmark/actions/workflows/tests.yml/badge.svg)](https://github.com/Lifsaa/llm-agent-injection-benchmark/actions/workflows/tests.yml)
+
+An email assistant with tools has to read email from strangers. If one of those emails contains instructions, will the agent follow them? This project measures how often a GPT-4o tool-calling agent can be pushed into unauthorized actions by injected email content, and how much two published defenses reduce that. Built as a group project for CSC 429 at Cal Poly.
 
 The agent gets a fixed user task, calls `read_emails`, and sees attacker-written emails only as tool output. An attack counts as successful only when injected content causes an unauthorized `send_email`, `delete_email`, or `forward_email` call.
 
@@ -14,6 +16,8 @@ On the hardened attack set (v2: 100 attacks across 10 categories, 4 defense cond
 | Spotlighting | 100 | 11% | 1,074 |
 | MELON alone | 100 | 18% | 1,671 |
 | Spotlighting + MELON-Aug | 100 | 7% | 2,012 |
+
+![Attack success rate by defense](docs/assets/v2-attack-success.svg)
 
 The two defenses catch different things. Spotlighting marks where untrusted email text starts and ends, so it works before the model decides anything. MELON re-runs the agent with the user's task masked out, and if the agent still wants to make the same tool call, that call is coming from the email, so it gets blocked. Each one alone helps a little; together they help a lot more. The catch is cost: MELON's re-run is a second model call, so tokens per run roughly double.
 
@@ -53,8 +57,8 @@ src/email_agent/
   costs.py, logging.py               token cost estimates and run logs
 scripts/       run_experiment.py, analyze_results.py, generate_v2_attacks.py, run_differentiation.sh
 data/          attack sets (v1, enhanced, differentiation) and benign hard negatives
-results/       raw runs and summaries; results/README.md says which outputs are final
-docs/          experiment write-ups and design notes
+results/       raw runs and summaries (v2_* is final); smoke, mock and pilot runs live in results/archive/
+docs/          experiment write-ups, design notes, paper summary, chart assets
 tests/         pytest suite, runs without an API key
 ```
 
